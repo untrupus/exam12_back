@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-
+const photos = require("./app/photos");
 const users = require("./app/users");
 const cors = require('cors');
 const config = require("./config");
@@ -18,8 +18,8 @@ const options = {
 
 const run = async () => {
     await mongoose.connect(config.db.url + "/" + config.db.name, options);
-
     app.use("/users", users);
+    app.use("/photos", photos);
     console.log("Connected");
     app.listen(port, () => {
         console.log(`Server started on ${port} port!`);
