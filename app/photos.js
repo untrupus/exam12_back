@@ -5,7 +5,11 @@ const Photo = require('../models/Photo');
 const auth = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
-    const result = await Photo.find();
+    let query;
+    if (req.query.user) {
+        query = {user: req.query.user}
+    }
+    const result = await Photo.find(query).populate({path: "user"});
     if (result) {
         res.send(result);
     } else {
