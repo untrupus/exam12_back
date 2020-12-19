@@ -33,12 +33,18 @@ router.post('/', [auth, config.upload.single("image")], async (req, res) => {
 });
 
 router.delete('/:id', auth, async (req, res) => {
-    const result = await Photo.findByIdAndRemove({_id: req.params.id});
-    if (result) {
-        res.send("Photo removed");
+    const result = await Photo.findById({_id: req.params.id});
+    if (result.user.equals(req.user._id)) {
+        const remove = await Photo.findByIdAndRemove({_id: req.params.id});
+        if (remove) {
+            res.send("Photo removed");
+        } else {
+            res.sendStatus(404);
+        }
     } else {
-        res.sendStatus(404);
+        res.status(401).send({message: 'Access denied'});
     }
+
 });
 
 module.exports = router;
